@@ -30,7 +30,7 @@ def parse_xml_with_lxml(xml_data):
         if file:
             df = pd.read_excel(file)
 
-            # Process 'body/en'
+            # Process 'body/en' 
             if 'body/en' in df.columns:
                 df['parsed_xml_en'] = df['body/en'].apply(parse_xml_with_lxml)
 
