@@ -56,7 +56,12 @@ def upload_file():
                         if question in df.columns:
                             df.at[index, question] = answer
 
-            df.drop(columns=['parsed_xml_en', 'parsed_xml_fr', 'body/en', 'body/fr'], inplace=True)
+            # Dropping the original columns only if they exist
+            columns_to_drop = ['parsed_xml_en', 'parsed_xml_fr', 'body/en', 'body/fr']
+            for col in columns_to_drop:
+                if col in df.columns:
+                    df.drop(columns=[col], inplace=True)
+
 
             output = BytesIO()
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
@@ -72,7 +77,47 @@ def upload_file():
     <head>
         <meta charset="UTF-8">
         <title>Upload Excel File</title>
-        <!-- Styles -->
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+            }
+            .container {
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            h1 {
+                color: #333;
+            }
+            .upload-btn-wrapper {
+                position: relative;
+                overflow: hidden;
+                display: inline-block;
+            }
+            .btn {
+                border: 2px solid gray;
+                color: gray;
+                background-color: white;
+                padding: 8px 20px;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: bold;
+            }
+            .upload-btn-wrapper input[type=file] {
+                font-size: 100px;
+                position: absolute;
+                left: 0;
+                top: 0;
+                opacity: 0;
+            }
+        </style>
     </head>
     <body>
         <div class="container">
