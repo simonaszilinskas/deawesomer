@@ -24,7 +24,7 @@ def parse_xml_with_lxml(xml_data):
     except Exception as e:
         return {}
 
-    @app.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
     def upload_file():
         # ... [existing code]
         if file:
