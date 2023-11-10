@@ -68,13 +68,67 @@ def upload_file():
             return response
 
     return '''
-    <!doctype html>
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <title>Upload Excel File</title>
-    <h1>Upload Excel File</h1>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .btn {
+            border: 2px solid gray;
+            color: gray;
+            background-color: white;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload Excel File</h1>
+        <form method="post" enctype="multipart/form-data">
+            <div class="upload-btn-wrapper">
+                <button class="btn">Choose a file</button>
+                <input type="file" name="file" />
+            </div>
+            <br><br>
+            <input type="submit" value="Upload">
+        </form>
+    </div>
+</body>
+</html>
     '''
 
 if __name__ == '__main__':
