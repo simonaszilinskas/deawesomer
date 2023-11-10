@@ -26,42 +26,63 @@ def parse_xml_with_lxml(xml_data):
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            return 'No file part'
-        file = request.files['file']
-        if file.filename == '':
-            return 'No selected file'
-        if file:
-            df = pd.read_excel(file)
+    # ... [existing code]
+    if file:
+        df = pd.read_excel(file)
 
-            if 'body/en' in df.columns:
-                df['parsed_xml_en'] = df['body/en'].apply(parse_xml_with_lxml)
+        # Process 'body/en'
+        if 'body/en' in df.columns:
+            df['parsed_xml_en'] = df['body/en'].apply(parse_xml_with_lxml)
 
-                 # Process and add data from 'parsed_xml_en' to the DataFrame
-                 # Similar to what you have done for 'parsed_xml'
+            # Add logic to process df['parsed_xml_en'] 
+            # and extract unique questions and answers
 
-                # Check if 'body/fr' column exists and process it
-            if 'body/fr' in df.columns:
-                df['parsed_xml_fr'] = df['body/fr'].apply(parse_xml_with_lxml)
+        # Process 'body/fr'
+        if 'body/fr' in df.columns:
+            df['parsed_xml_fr'] = df['body/fr'].apply(parse_xml_with_lxml)
 
-            # Identifying all unique questions
-            unique_questions = set()
-            for parsed_data in df['parsed_xml']:
-                unique_questions.update(parsed_data.keys())
+            # Add logic to process df['parsed_xml_fr'] 
+            # and extract unique questions and answers
 
-            # Creating new columns for each unique question
-            for question in unique_questions:
-                df[question] = ''
+        # Example: Combine or keep separate - depends on your requirement
+        # Here's a simple example to combine the unique questions from both
+        unique_questions_en = set()
+        unique_questions_fr = set()
 
-            # Populating the new columns with answers
+        if 'parsed_xml_en' in df.columns:
+            for parsed_data in df['parsed_xml_en']:
+                unique_questions_en.update(parsed_data.keys())
+
+        if 'parsed_xml_fr' in df.columns:
+            for parsed_data in df['parsed_xml_fr']:
+                unique_questions_fr.update(parsed_data.keys())
+
+        # Combine unique questions from both languages (if this is your requirement)
+        unique_questions = unique_questions_en.union(unique_questions_fr)
+
+        # Creating new columns for each unique question
+        for question in unique_questions:
+            df[question] = ''
+
+        # Populating the new columns with answers for both languages
+        # Adjust this logic based on how you want to handle the languages
+        # This is an example where we fill data from both columns into the same DataFrame
+        if 'parsed_xml_en' in df.columns:
             for index, row in df.iterrows():
-                for question, answer in row['parsed_xml'].items():
+                for question, answer in row['parsed_xml_en'].items():
                     if question in df.columns:
                         df.at[index, question] = answer
 
-            # Dropping the original and parsed_xml columns
-            df.drop(columns=['parsed_xml', 'body/en'], inplace=True)
+        if 'parsed_xml_fr' in df.columns:
+            for index, row in df.iterrows():
+                for question, answer in row['parsed_xml_fr'].items():
+                    if question in df.columns:
+                        # Example logic - you can adjust it based on your needs
+                        # This will overwrite the English data if French data is available
+                        df.at[index, question] = answer
+
+        # Dropping the original and parsed_xml columns
+        df.drop(columns=['parsed_xml_en', 'parsed_xml_fr', 'body/en', 'body/fr'], inplace=True)
 
             # Write the processed DataFrame to a BytesIO buffer
             output = BytesIO()
