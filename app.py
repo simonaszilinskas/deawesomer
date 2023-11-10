@@ -35,8 +35,15 @@ def upload_file():
         if file:
             df = pd.read_excel(file)
 
-            # Process the XML data in the 'body/en' column
-            df['parsed_xml'] = df['body/en'].apply(parse_xml_with_lxml)
+            if 'body/en' in df.columns:
+                df['parsed_xml_en'] = df['body/en'].apply(parse_xml_with_lxml)
+
+                 # Process and add data from 'parsed_xml_en' to the DataFrame
+                 # Similar to what you have done for 'parsed_xml'
+
+                # Check if 'body/fr' column exists and process it
+            if 'body/fr' in df.columns:
+                df['parsed_xml_fr'] = df['body/fr'].apply(parse_xml_with_lxml)
 
             # Identifying all unique questions
             unique_questions = set()
